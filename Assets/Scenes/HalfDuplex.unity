@@ -919,7 +919,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2078922796}
-        m_TargetAssemblyTypeName: HalfDuplex, Assembly-CSharp
+        m_TargetAssemblyTypeName: LecturaEscritura, Assembly-CSharp
         m_MethodName: leer_datos
         m_Mode: 1
         m_Arguments:
@@ -1052,7 +1052,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2078922796}
-        m_TargetAssemblyTypeName: HalfDuplex, Assembly-CSharp
+        m_TargetAssemblyTypeName: LecturaEscritura, Assembly-CSharp
         m_MethodName: conectar
         m_Mode: 5
         m_Arguments:
@@ -1319,7 +1319,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2078922796}
-        m_TargetAssemblyTypeName: HalfDuplex, Assembly-CSharp
+        m_TargetAssemblyTypeName: LecturaEscritura, Assembly-CSharp
         m_MethodName: escribir_datos
         m_Mode: 1
         m_Arguments:
@@ -1564,7 +1564,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2078922795}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d9fcc279242e1f4ea4ffec3c3474aac, type: 3}
+  m_Script: {fileID: 11500000, guid: f4463022ccfd1704c987c856357d1d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   estado: {fileID: 1690600614}
