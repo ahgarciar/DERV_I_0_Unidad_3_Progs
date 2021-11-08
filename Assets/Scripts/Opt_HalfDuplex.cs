@@ -5,7 +5,7 @@ using System.IO.Ports;
 using TMPro;
 using UnityEngine;
 
-public class HalfDuplex : MonoBehaviour
+public class Opt_HalfDuplex : MonoBehaviour
 {
     SerialPort arduino;
 
@@ -25,12 +25,16 @@ public class HalfDuplex : MonoBehaviour
     [SerializeField]
     public int valSensor3;
 
+    [SerializeField]
+    [TextArea(5, 10)]
+    public string valor = "";
+
     public void conectar(string ncom) {         
 
         if (arduino == null)  //conectar
         {
             arduino = new SerialPort("COM" + ncom, 9600);  //Ej: COM2
-            arduino.ReadTimeout = 150; //100ms
+            arduino.ReadTimeout = 100; //100ms
             arduino.Open();
             estado.text = "CONECTADO";
             txt_boton.text = "DESCONECTAR";
@@ -82,17 +86,29 @@ public class HalfDuplex : MonoBehaviour
             {
                 if (arduino.IsOpen)
                 {
-                    string valor = arduino.ReadLine(); //arduino.ReadExisting(); 
-                    Debug.Log(valor);
+                    valor += arduino.ReadExisting(); 
+                    //Debug.Log(valor);
                     //H768R266R809T
 
-                    if (valor[0] == 'H')
+                    //CUIDADO CUANDO UNA TRAMA SE LEE DESDE EL COMIENZO TRUNCADA! 
+
+                    if (valor[0] == 'H') /// AQUI SE SOLUCIONARÍA LO DE CUIDADO
                     {
                         //Debug.Log("la Trama inicia correctamente");
                         if (valor[valor.Length-1] == 'T')
                         {
                             Debug.Log("La Trama esta completa!");
 
+                            //1.- quitar una trama de la cola
+
+                            //TAREA INDIVIDUAL PARA EL 9 DE NOVIEMBRE  
+                            // :  IDEAR Y PROBAR UN ALGORITMO QUE PERMITA QUITAR UNA TRAMA DE
+                            //          UNA CONJUNTO(COLA) DE TRAMAS
+
+                            //2.-procesarla
+
+                            //PROCESAMIENTO:
+                            /*
                             string temp = valor.Substring(1, valor.IndexOf('R')-1);
                             valSensor1 = Convert.ToInt32(temp); 
                             Debug.Log(temp);
@@ -119,15 +135,15 @@ public class HalfDuplex : MonoBehaviour
 
                             /////////////////////////////
                             ///  
-
+                            */
 
 
                         }
-                    }
+                    }///
 
                 }
             }
-            yield return new WaitForSeconds(.20f);
+            yield return new WaitForSeconds(.01f);
         }
     }
 
