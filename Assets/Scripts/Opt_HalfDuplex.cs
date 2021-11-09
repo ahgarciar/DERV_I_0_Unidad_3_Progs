@@ -27,7 +27,7 @@ public class Opt_HalfDuplex : MonoBehaviour
 
     [SerializeField]
     [TextArea(5, 10)]
-    public string valor = "";
+    public string cadena = "";
 
     public void conectar(string ncom) {         
 
@@ -86,61 +86,90 @@ public class Opt_HalfDuplex : MonoBehaviour
             {
                 if (arduino.IsOpen)
                 {
-                    valor += arduino.ReadExisting(); 
+                    cadena += arduino.ReadExisting();
                     //Debug.Log(valor);
                     //H768R266R809T
 
                     //CUIDADO CUANDO UNA TRAMA SE LEE DESDE EL COMIENZO TRUNCADA! 
-
-                    if (valor[0] == 'H') /// AQUI SE SOLUCIONARÍA LO DE CUIDADO
+                    int index_begin=-1;
+                    int index_end = -1;
+                    if (cadena.Equals(""))//cuando no haya nada que leer
                     {
-                        //Debug.Log("la Trama inicia correctamente");
-                        if (valor[valor.Length-1] == 'T')
+                        //No se hace nada
+                    }
+                    else 
+                    //Posibilidad 1 de falla, llega solo esto en la lectura 1: 556R40T  //arreglada
+
+                    //Posibilidad 2 de falla, llega solo esto en la lectura 1: 556R40TH27R30R50T
+                    // ESTO SE PUEDE ARREGLAR COMPROBANDO QUE EL INDICE DE "H" SEA MENOR QUE EL "T"
+
+                    //Posibilidad 3 de falla, llega solo esto en la lectura 1: 556R40TH30R50T
+                    // ESTO SE PUEDE ARREGLAR CON UNA VALIDACIÓN CORROBORANDO QUE LA INFORMACIÓN 
+                    // HAYA PODIDO SER LEIDA O VAYA A PODER SER LEIDA COMPLETAMENTE (CONTANDO LOS SEPARADORES)
+                    {
+                        if ((index_begin = cadena.IndexOf('H')) != -1) // AQUI SE SOLUCIONARÍA LO DE CUIDADO
                         {
-                            Debug.Log("La Trama esta completa!");
+                            //Debug.Log("la Trama inicia correctamente");
+                            if ((index_end = cadena.IndexOf('T')) != -1)
+                            {
+                                Debug.Log("La Trama esta completa! Indices->");
+                                Debug.Log("Inicio: " + index_begin.ToString() + " Fin:" + index_end.ToString());
 
-                            //1.- quitar una trama de la cola
+                                //1.- quitar una trama de la cola
 
-                            //TAREA INDIVIDUAL PARA EL 9 DE NOVIEMBRE  
-                            // :  IDEAR Y PROBAR UN ALGORITMO QUE PERMITA QUITAR UNA TRAMA DE
-                            //          UNA CONJUNTO(COLA) DE TRAMAS
+                                //TAREA INDIVIDUAL PARA EL 9 DE NOVIEMBRE  
+                                // :  IDEAR Y PROBAR UN ALGORITMO QUE PERMITA QUITAR UNA TRAMA DE
+                                //          UNA CONJUNTO(COLA) DE TRAMAS
 
-                            //2.-procesarla
+                                string valor = cadena.Substring(index_begin, index_end + 1);
+                                Debug.Log("Cadena Obtenida: " + valor);
 
-                            //PROCESAMIENTO:
-                            /*
-                            string temp = valor.Substring(1, valor.IndexOf('R')-1);
-                            valSensor1 = Convert.ToInt32(temp); 
-                            Debug.Log(temp);
+                                //Quita la cadena que acaba de recuperar en la variable VALOR
+                                cadena = cadena.Substring(index_end + 1);
 
-                            //Trama sin el valor del primer sensor
-                            temp = valor.Substring(valor.IndexOf('R') + 1); 
-                            Debug.Log(temp);
+                                //2.-procesarla
 
-                            /////////////////////////////////
+                                //PROCESAMIENTO:
 
-                            //obtención del valor del segundo sendor
-                            string aux;   //                         
-                            aux = temp.Substring(0, temp.IndexOf('R'));
-                            valSensor2 = Convert.ToInt32(aux);
-                            Debug.Log(aux);
+                                string temp = valor.Substring(1, valor.IndexOf('R') - 1);
+                                valSensor1 = Convert.ToInt32(temp);
+                                Debug.Log("Valor Sensor 1: " + temp);
 
-                            //trama sin el valor del segundo sensor
-                            temp = temp.Substring(temp.IndexOf('R') + 1);
-                            Debug.Log(temp);
+                                //Trama sin el valor del primer sensor
+                                temp = valor.Substring(valor.IndexOf('R') + 1);
+                                Debug.Log(temp);
 
-                            //obtencion del valor del tercer sensor
-                            temp = temp.Substring(0, temp.Length - 1);
-                            valSensor3 = Convert.ToInt32(temp);
+                                /////////////////////////////////
 
-                            /////////////////////////////
-                            ///  
-                            */
+                                //obtención del valor del segundo sendor
+                                string aux;   //                         
+                                aux = temp.Substring(0, temp.IndexOf('R'));
+                                valSensor2 = Convert.ToInt32(aux);
+                                Debug.Log("Valor Sensor 2: " + aux);
+
+                                //trama sin el valor del segundo sensor
+                                temp = temp.Substring(temp.IndexOf('R') + 1);
+                                Debug.Log(temp);
+
+                                //obtencion del valor del tercer sensor
+                                temp = temp.Substring(0, temp.Length - 1);
+                                Debug.Log("Valor Sensor 3: " + temp);
+                                valSensor3 = Convert.ToInt32(temp);
+
+                                /////////////////////////////
+                                ///  
 
 
+
+                            }
+                        }///
+                        else
+                        { //si no contiene a la H
+                            cadena = ""; //para eliminar fragmentos de tramas que no tienen un comienzo
+                                         //**PODRÍA MEJORARSE...(¿Qué pasa con las intermedias incompletas?)
+                            Debug.Log("Trama Incompleta de Inicio Eliminada");
                         }
-                    }///
-
+                    }
                 }
             }
             yield return new WaitForSeconds(.01f);
