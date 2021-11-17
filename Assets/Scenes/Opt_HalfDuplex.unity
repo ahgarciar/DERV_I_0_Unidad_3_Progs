@@ -1570,9 +1570,10 @@ MonoBehaviour:
   estado: {fileID: 1690600614}
   txt_boton: {fileID: 997321306}
   estadoLed: 0
-  valSensor1: 0
-  valSensor2: 0
-  valSensor3: 0
+  valSensor1: 15
+  valSensor2: 240
+  valSensor3: 120
+  cadena: 
 --- !u!4 &2078922797
 Transform:
   m_ObjectHideFlags: 0

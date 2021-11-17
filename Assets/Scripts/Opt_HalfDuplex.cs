@@ -77,6 +77,25 @@ public class Opt_HalfDuplex : MonoBehaviour
     public void leer_datos() {
         StopAllCoroutines();
         StartCoroutine("leer_datos_arduino");
+        StartCoroutine("ControlActuadores");
+    }
+
+    IEnumerator ControlActuadores() {
+        while (true) {
+            int valActuador1 = valSensor1 / 4;
+            int valActuador2 = valSensor2 / 4;
+            int valActuador3 = valSensor3 / 4;
+
+            //H768R266R809T
+            string trama = "H" + 
+                valActuador1.ToString() + "R" + 
+                valActuador2.ToString() + "R" + 
+                valActuador3.ToString() + "T";
+
+            arduino.WriteLine(trama);
+
+            yield return new WaitForSeconds(0.2f);
+        }
     }
 
     IEnumerator leer_datos_arduino() {
@@ -87,7 +106,7 @@ public class Opt_HalfDuplex : MonoBehaviour
                 if (arduino.IsOpen)
                 {
                     cadena += arduino.ReadExisting();
-                    //Debug.Log(valor);
+                    //Debug.Log(cadena);
                     //H768R266R809T
 
                     //CUIDADO CUANDO UNA TRAMA SE LEE DESDE EL COMIENZO TRUNCADA! 
